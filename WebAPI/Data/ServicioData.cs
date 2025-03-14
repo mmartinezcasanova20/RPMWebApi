@@ -30,6 +30,8 @@ namespace WebAPI.Data
                             {
                                 NumeroOrden = Convert.ToInt32(dr["NumeroOrden"]),
                                 CICliente = Convert.ToInt32(dr["CICliente"]),
+                                NombreCliente = dr["NombreCliente"].ToString(),
+                                Telefono = dr["Telefono"].ToString(),
                                 TipoEquipo = dr["TipoEquipo"].ToString(),
                                 Modelo = dr["Modelo"].ToString(),
                                 TrabajoARealizar = dr["TrabajoARealizar"].ToString(),

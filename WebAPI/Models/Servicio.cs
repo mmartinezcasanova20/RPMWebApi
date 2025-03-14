@@ -4,6 +4,8 @@
     {
         public int NumeroOrden { get; set; }
         public int CICliente { get; set; }
+        public string NombreCliente { get; set; }
+        public string Telefono { get; set; }
         public string Modelo { get; set; }
         public string TipoEquipo { get; set; }
         public int TipoServicio { get; set; }
