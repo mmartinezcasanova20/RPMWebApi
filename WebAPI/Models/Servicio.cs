@@ -11,6 +11,7 @@
         public int TipoServicio { get; set; }
         public string TrabajoARealizar { get; set; }
         public int Tecnico { get; set; }
+        public string NombreTecnico { get; set; }
         public int PrecioReparacion { get; set; }
         public string FechaRecibido { get; set; }
         public string FechaFinalizado { get; set; }

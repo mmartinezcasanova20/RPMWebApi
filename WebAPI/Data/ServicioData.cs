@@ -188,6 +188,7 @@ namespace WebAPI.Data
                                 FechaRecibido = dr["FechaRecibido"].ToString(),
                                 FechaFinalizado = dr["FechaFinalizado"].ToString(),
                                 Tecnico = Convert.ToInt32(dr["Tecnico"]),
+                                NombreTecnico = dr["NombreTecnico"].ToString(),
                                 PrecioReparacion = Convert.ToInt32(dr["PrecioReparacion"]),
                                 IdEstado = Convert.ToInt32(dr["IdEstado"]),
                                 Nota = dr["Nota"].ToString(),

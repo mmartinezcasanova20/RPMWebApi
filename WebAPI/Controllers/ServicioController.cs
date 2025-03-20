@@ -33,8 +33,11 @@ namespace WebAPI.Controllers
 
 
         // PUT api/<controller>/5
+        //[HttpPut]
+        //[Route("api/servicio/ActualizarDetalles/{id}")]
+
         [HttpPut]
-        [Route("api/servicio/ActualizarDetalles/{id}")]
+        [Route("ActualizarDetalles/{id}")]
         public IActionResult PutActualizarDetalles(int id, [FromBody] Servicio oServicio)
         {
             bool resultado = ServicioData.Modificar(oServicio);
@@ -50,8 +53,11 @@ namespace WebAPI.Controllers
         }
 
         // PUT api/<controller>/5
+        //[HttpPut]
+        //[Route("api/servicio/ModificarEstado/{id}")]
+
         [HttpPut]
-        [Route("api/servicio/ModificarEstado/{id}")]
+        [Route("ModificarEstado/{id}")]
         public IActionResult PutModificarEstado(int id, [FromBody] Servicio oServicio)
         {
             bool resultado = ServicioData.ModificarEstado(oServicio);
