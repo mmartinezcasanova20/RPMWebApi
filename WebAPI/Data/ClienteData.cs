@@ -52,6 +52,8 @@ namespace WebAPI.Data
                 SqlCommand cmd = new SqlCommand("SP_Registrar_Cliente", oConexion);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@CI", oCliente.CI);
+                cmd.Parameters.AddWithValue("@RUT", oCliente.RUT);
+                cmd.Parameters.AddWithValue("@RazonSocial", oCliente.RazonSocial);
                 cmd.Parameters.AddWithValue("@Nombre", oCliente.Nombre);
                 cmd.Parameters.AddWithValue("@Apellido", oCliente.Apellido);
                 cmd.Parameters.AddWithValue("@Telefono", oCliente.Telefono);
