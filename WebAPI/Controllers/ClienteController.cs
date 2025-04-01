@@ -35,10 +35,27 @@ public class ClienteController : ControllerBase
     }
 
     // PUT api/cliente/{id}
-    [HttpPut("{id:int}")]
-    public bool Put(int id, [FromBody] Cliente oCliente)
+    //[HttpPut("{id:int}")]
+    //public bool Put(int id, [FromBody] Cliente oCliente)
+    //{
+    //    return ClienteData.Modificar(oCliente);
+    //}
+
+
+    [HttpPut]
+    [Route("ActualizarDetalles/{id}")]
+    public IActionResult PutActualizarDetalles(int id, [FromBody] Cliente oCliente)
     {
-        return ClienteData.Modificar(oCliente);
+        bool resultado = ClienteData.Modificar(oCliente);
+
+        if (resultado)
+        {
+            return Ok("Actualización de detalles exitosa");
+        }
+        else
+        {
+            return BadRequest("La actualización de detalles ha fallado");
+        }
     }
 
     // DELETE api/cliente/{id}

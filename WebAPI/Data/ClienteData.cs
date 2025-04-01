@@ -84,6 +84,8 @@ namespace WebAPI.Data
                 cmd.Parameters.AddWithValue("@Nombre", oCliente.Nombre);
                 cmd.Parameters.AddWithValue("@Apellido", oCliente.Apellido);
                 cmd.Parameters.AddWithValue("@Telefono", oCliente.Telefono);
+                cmd.Parameters.AddWithValue("@RUT", oCliente.RUT);
+                cmd.Parameters.AddWithValue("@RazonSocial", oCliente.RazonSocial);
                 cmd.Parameters.AddWithValue("@Mail", oCliente.Mail);
 
                 try
@@ -124,6 +126,8 @@ namespace WebAPI.Data
                                 Nombre = dr["Nombre"].ToString(),
                                 Apellido = dr["Apellido"].ToString(),
                                 Telefono = dr["Telefono"].ToString(),
+                                RUT = dr["RUT"].ToString(),
+                                RazonSocial = dr["RazonSocial"].ToString(),
                                 Mail = dr["Mail"].ToString()
                             };
                         }
