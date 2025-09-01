@@ -93,7 +93,7 @@ namespace WebAPI.Data
         public static bool ModificarEstado(Servicio oServicio)
         {
 
-           
+
             using (SqlConnection oConexion = new SqlConnection(Conexion.RutaConexion))
             {
                 SqlCommand cmd = new SqlCommand("SP_Modificar_EstadoServicio", oConexion);
@@ -205,6 +205,52 @@ namespace WebAPI.Data
             }
         }
 
+        public static List<Servicio> ObtenerPorCedula(int Cedula)
+        {
+            List<Servicio> oListaServicio = new List<Servicio>();
+            using (SqlConnection oConexion = new SqlConnection(Conexion.RutaConexion))
+            {
+                SqlCommand cmd = new SqlCommand("SP_Obtener_Servicio_CI", oConexion);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CI", Cedula);
+
+                try
+                {
+                    oConexion.Open();
+                    cmd.ExecuteNonQuery();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            oListaServicio.Add(new Servicio()
+                            {
+                                NumeroOrden = Convert.ToInt32(dr["NumeroOrden"]),
+                                CICliente = Convert.ToInt32(dr["CICliente"]),
+                                TipoEquipo = dr["TipoEquipo"].ToString(),
+                                Modelo = dr["Modelo"].ToString(),
+                                TrabajoARealizar = dr["TrabajoARealizar"].ToString(),
+                                TipoServicio = Convert.ToInt32(dr["TipoServicio"]),
+                                FechaRecibido = dr["FechaRecibido"].ToString(),
+                                FechaFinalizado = dr["FechaFinalizado"].ToString(),
+                                Tecnico = Convert.ToInt32(dr["Tecnico"]),
+                                NombreTecnico = dr["NombreTecnico"].ToString(),
+                                PrecioReparacion = Convert.ToInt32(dr["PrecioReparacion"]),
+                                IdEstado = Convert.ToInt32(dr["IdEstado"]),
+                                Nota = dr["Nota"].ToString(),
+                                Borrado = Convert.ToInt32(dr["Borrado"]),
+                            });
+                        }
+                    }
+                    return oListaServicio;
+                }
+                catch (Exception ex)
+                {
+                    return oListaServicio;
+                }
+            }
+        }
+
         public static bool Eliminar(int id)
         {
             using (SqlConnection oConexion = new SqlConnection(Conexion.RutaConexion))
@@ -217,7 +263,7 @@ namespace WebAPI.Data
                 {
                     oConexion.Open();
                     cmd.ExecuteNonQuery();
-                    return true; 
+                    return true;
 
                 }
                 catch (Exception ex)

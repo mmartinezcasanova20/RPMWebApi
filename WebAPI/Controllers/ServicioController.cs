@@ -21,6 +21,13 @@ namespace WebAPI.Controllers
             return ServicioData.Obtener(id);
         }
 
+        [HttpGet("by-cedula")]
+        public List<Servicio> GetByCedula(int cedula)
+        {
+            return ServicioData.ObtenerPorCedula(cedula);
+        }
+
+
 
 
         // POST api/<controller>
