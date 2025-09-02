@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using WebApi.Data;
 using WebAPI.Data;
 using WebAPI.Models;
 
@@ -28,7 +31,23 @@ namespace WebAPI.Controllers
         }
 
 
+        [HttpPost]
+        [Route("filtrar")]
+        public async Task<IActionResult> GetServicios([FromBody] ServicioFiltroDto filtros)
+        {
+            
+            var (query, count) = await ServicioData.ObtenerServiciosFiltradosAsync(filtros);
 
+            var totalItems = count;
+            var totalPages = (int)Math.Ceiling(totalItems / (double)filtros.Limit);
+            var items = query.ToList();
+
+            return Ok(new
+            {
+                items,
+                totalPages
+            });
+        }
 
         // POST api/<controller>
         [HttpPost]

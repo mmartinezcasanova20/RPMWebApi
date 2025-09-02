@@ -1,15 +1,80 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using WebApi.Data;
 using WebAPI.Models;
 
 namespace WebAPI.Data
 {
     public class ServicioData
     {
+
+        public static async Task<(List<Servicio>? Servicios, int TotalRegistros)> ObtenerServiciosFiltradosAsync(ServicioFiltroDto filtro)
+        {
+            var servicios = new List<Servicio>();
+            int totalRegistros = 0;
+            try {
+                using (var connection = new SqlConnection(Conexion.RutaConexion))
+                using (var command = new SqlCommand("SP_Obtener_Servicio_Filtros", connection))
+                {
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@TipoEquipo", filtro.TipoEquipo);
+                    command.Parameters.AddWithValue("@Tecnico", filtro.Tecnico);
+                    command.Parameters.AddWithValue("@FechaRecibido", filtro.FechaRecibido);
+                    command.Parameters.AddWithValue("@TipoServicio", filtro.TipoServicio);
+                    command.Parameters.AddWithValue("@IdEstado", filtro.Estado);
+                    command.Parameters.AddWithValue("@SearchCriteria", filtro.NumeroOrden);
+                    command.Parameters.AddWithValue("@NumeroPagina", filtro.Page);
+                    command.Parameters.AddWithValue("@TamanoPagina", filtro.Limit);
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Primer result set: datos paginados
+                        while (reader.Read())
+                        {
+                            servicios.Add(new Servicio()
+                            {
+                                NumeroOrden = Convert.ToInt32(reader["NumeroOrden"]),
+                                CICliente = Convert.ToInt32(reader["CICliente"]),
+                                NombreCliente = reader["NombreCliente"].ToString(),
+                                Telefono = reader["Telefono"].ToString(),
+                                TipoEquipo = reader["TipoEquipo"].ToString(),
+                                Modelo = reader["Modelo"].ToString(),
+                                TrabajoARealizar = reader["TrabajoARealizar"].ToString(),
+                                TipoServicio = Convert.ToInt32(reader["TipoServicio"]),
+                                FechaRecibido = reader["FechaRecibido"].ToString(),
+                                FechaFinalizado = reader["FechaFinalizado"].ToString(),
+                                Tecnico = Convert.ToInt32(reader["Tecnico"]),
+                                PrecioReparacion = Convert.ToInt32(reader["PrecioReparacion"]),
+                                IdEstado = Convert.ToInt32(reader["IdEstado"]),
+                                Nota = reader["Nota"].ToString(),
+                                Borrado = Convert.ToInt32(reader["Borrado"]),
+                            });
+                        }
+
+                        // Segundo result set: total de registros
+                        if (await reader.NextResultAsync() && await reader.ReadAsync())
+                        {
+                            totalRegistros = reader.GetInt32(0);
+                        }
+                    }
+                }
+
+                return (servicios, totalRegistros);
+            } catch(Exception ex)
+            {
+                return (null,0);
+            }
+
+           
+        }
+
         public static List<Servicio> Listar()
         {
             List<Servicio> oListaServicio = new List<Servicio>();
