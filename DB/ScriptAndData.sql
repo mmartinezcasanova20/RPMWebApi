@@ -557,7 +557,7 @@ CREATE procedure [dbo].[SP_Modificar_Servicio](
 @TipoEquipo varchar(200),
 @Modelo varchar(200),
 @TrabajoARealizar varchar(200),
-@TipoServicio varchar(200),
+@TipoServicio int,
 @FechaRecibido varchar(10),
 @FechaFinalizado varchar(10),
 @Tecnico int,
@@ -612,6 +612,32 @@ begin
   where s.NumeroOrden = @NumeroOrden
 end
 GO
+/****** Object:  StoredProcedure [dbo].[SP_Obtener_Servicio_CI]    Script Date: 1/31/2025 3:40:18 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[SP_Obtener_Servicio_CI]
+@CI int
+as
+begin
+	select s.NumeroOrden,
+		   s.CICliente,
+		   s.TipoEquipo,
+		   s.Modelo,
+		   s.TrabajoARealizar,
+		   s.TipoServicio,
+		   s.FechaRecibido,
+		   s.FechaFinalizado,
+		   e.IdEmpleado as Tecnico,
+		   e.NombreEmpleado as NombreTecnico,
+		   s.PrecioReparacion,
+		   s.IdEstado,
+		   s.Nota,
+		   s.Borrado
+  from servicio s inner join empleado e on e.IdEmpleado = s.Tecnico
+  where s.CICliente = @CI
+end
 /****** Object:  StoredProcedure [dbo].[SP_Obtener_Usuario]    Script Date: 1/31/2025 3:40:18 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -717,7 +743,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE procedure [dbo].[SP_Registrar_Servicio](
 @CICliente int,@TipoEquipo VARCHAR(200),
-@Modelo VARCHAR(200),@TrabajoARealizar VARCHAR(200),@TipoServicio VARCHAR(100),
+@Modelo VARCHAR(200),@TrabajoARealizar VARCHAR(200),@TipoServicio int,
 @FechaRecibido varchar(10),@FechaFinalizado varchar(10),@Tecnico VARCHAR(200),
 @PrecioReparacion int,@IdEstado int,@Nota varchar(100),@Borrado bit
 )
