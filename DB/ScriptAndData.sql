@@ -756,3 +756,73 @@ BEGIN
 	SET IdServicio  = @IdServicio, IdServicioVinculado =  @IdServicioVinculado
 END
 GO
+
+/****** Object:  StoredProcedure [dbo].[SP_Obtener_Servicio_Filtros]    Script Date: 9/2/2025 6:13:13 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROC [dbo].[SP_Obtener_Servicio_Filtros]
+    @TipoEquipo NVARCHAR(200) = NULL,
+    @TipoServicio VARCHAR(100) = NULL,
+    @IdEstado VARCHAR(100) = NULL,
+	@Tecnico VARCHAR(100) = NULL,
+    @SearchCriteria NVARCHAR(50) = NULL,
+    @NumeroPagina INT = NULL,
+    @TamanoPagina INT = NULL,
+	@FechaRecibido DATE =  NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+	DECLARE @ServiciosFiltrados TABLE (
+		NumeroOrden NVARCHAR(50),
+		CICliente NVARCHAR(50),
+		TipoEquipo NVARCHAR(50),
+		Modelo NVARCHAR(50),
+		TrabajoARealizar NVARCHAR(MAX),
+		TipoServicio NVARCHAR(50),
+		FechaRecibido varchar(10),
+		FechaFinalizado varchar(10),
+		Tecnico INT,
+		PrecioReparacion DECIMAL(18,2),
+		IdEstado INT,
+		Nota NVARCHAR(MAX),
+		Borrado BIT,
+		NombreCliente VARCHAR(50),
+		Telefono VARCHAR(20)
+	)
+
+
+    -- Tabla temporal para aplicar filtros una sola vez
+    INSERT INTO @ServiciosFiltrados
+        SELECT 
+            S.*,C.Nombre AS NombreCliente, C.Telefono
+		FROM SERVICIO S
+			INNER JOIN CLIENTE C 
+				ON S.CICliente = C.CI
+			INNER JOIN EMPLEADO E 
+				ON E.IdEmpleado = S.Tecnico
+			INNER JOIN TIPOSERVICIO T 
+				ON T.IdTipoServicio = S.TipoServicio
+			INNER JOIN ESTADOSERVICIO ES 
+				ON ES.IdEstado = S.IdEstado
+        WHERE 
+            (@TipoEquipo IS NULL OR s.TipoEquipo LIKE '%' + @TipoEquipo + '%') AND
+            (@TipoServicio IS NULL OR @TipoServicio = '' OR T.NombreServicio = @TipoServicio) AND
+            (@IdEstado IS NULL OR @IdEstado = '' OR ES.Estado = @IdEstado) AND
+			(@Tecnico IS NULL OR @Tecnico = '' OR E.NombreEmpleado = @Tecnico) AND
+			(@FechaRecibido IS NULL OR S.FechaRecibido = CONVERT(VARCHAR(10), @FechaRecibido, 23)) AND
+			(@SearchCriteria IS NULL OR (s.CICliente LIKE '%' + @SearchCriteria + '%' OR s.NumeroOrden LIKE '%' + @SearchCriteria + '%'))
+     -- Resultado paginado
+    SELECT *
+    FROM @ServiciosFiltrados
+    ORDER BY FechaRecibido DESC
+    OFFSET (@NumeroPagina - 1) * @TamanoPagina ROWS
+    FETCH NEXT @TamanoPagina ROWS ONLY;
+
+    -- Total de registros sin paginación
+    SELECT COUNT(*) AS TotalRegistros
+    FROM @ServiciosFiltrados;
+END
+GO
